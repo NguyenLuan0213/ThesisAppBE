@@ -1,0 +1,50 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>THỐNG KÊ</h1>
+<p> Số lượng sinh viên đạt theo quý</p>
+<table>
+    <tr>
+        <th>Quý</th>
+        <th>Số lượng sinh viên đã đạt</th>
+    </tr>
+    {% for quarter, count in students_by_quarter.items %}
+    <tr>
+        <td>{{ quarter }}</td>
+        <td>{{ count }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p>Số lượng sinh viên không đạt: {{ students_fail }}/{{count_student}}</p>
+
+<canvas id="myChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    window.onload = function() {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys({{ students_by_quarter|safe }}),
+                datasets: [{
+                    label: 'Số lượng sinh viên đã đạt',
+                    data: Object.values({{ students_by_quarter|safe }}),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    };
+</script>
+{% endblock %}
+
+

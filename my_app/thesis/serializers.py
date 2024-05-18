@@ -46,7 +46,7 @@ class StudentDoThesisSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentDoThesis
-        fields = ['id', 'student_name', 'thesis', 'thesis_defense_committee', 'date_created', 'status', 'count_score', 'active', 'student']
+        fields = ['id', 'student_name', 'thesis', 'thesis_defense_committee', 'date_created', 'status', 'count_score', 'active', 'student', 'results']
 
     def get_student_name(self, obj):
         return obj.student.first_name + ' ' + obj.student.last_name
@@ -57,7 +57,7 @@ class TeacherDoThesisSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TeacherDoThesis
-        fields = ['id', 'teacher_name', 'thesis_student', 'date_join']
+        fields = ['id', 'teacher_name', 'thesis_student', 'date_join', 'teacher']
 
     def get_teacher_name(self, obj):
         return obj.teacher.first_name + ' ' + obj.teacher.last_name

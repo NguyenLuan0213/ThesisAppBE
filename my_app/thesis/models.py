@@ -67,6 +67,7 @@ class StudentDoThesis(models.Model):
     active = models.BooleanField(default=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='DN')
     count_score = models.FloatField(default=0.0, null=True, blank=True)
+    results = models.TextField(null=True, blank=True)
 
     def clean(self):
         super().clean()

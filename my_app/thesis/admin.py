@@ -1,14 +1,16 @@
 from django.contrib import admin
 from django import forms
 from django.contrib.auth.models import Group, Permission
+from django.template.response import TemplateResponse
+from django.urls import path
 from django.utils.html import mark_safe, format_html
+from . import dao
 from .models import StudentDoThesis, Thesis, TeacherDoThesis, ThesisDefenseCommittee, CommitteeMember, Score, Notification, User, Criteria, SpecificCriteria
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.core.exceptions import ValidationError
 from oauth2_provider.models import Application, Grant, AccessToken, RefreshToken, IDToken
 from django.core.validators import MinValueValidator, MaxValueValidator
-
-
+from django import forms
 
 
 class TeacherDoThesisInline(admin.StackedInline):
@@ -18,7 +20,7 @@ class TeacherDoThesisInline(admin.StackedInline):
 
 
 class StudentDoThesisSite(admin.ModelAdmin):
-    list_display = ["id", "student_id", "thesis_id", "thesis_defense_committee", "date_created", "active", "status", "count_score"]
+    list_display = ["id", "student_id", "thesis_id", "thesis_defense_committee", "date_created", "active", "status", "count_score", 'results']
     inlines = (TeacherDoThesisInline,)
 
 
@@ -143,6 +145,18 @@ class ThesisAdminSite(admin.AdminSite):
     site_header = "HỆ THỐNG QUẢN LÝ LUẬN VĂN"
     site_title = "Hệ thống quản lý luận văn"
     index_title = "Hệ thống quản lý luận văn"
+
+    def get_urls(self):
+        return [
+            path('student_count/', self.student_count)
+        ] + super().get_urls()
+
+    def student_count(self, request):
+        return TemplateResponse(request, "admin/student_count.html", {
+            "students_by_quarter": dao.count_passed_students_by_quarter(2024),  # Replace 2024 with the desired year
+            "students_fail": dao.count_fail_student(),
+            "count_student": dao.count_students_do_thesis()
+        })
 
 
 admin_site = ThesisAdminSite(name='thesisAppAdmin')
